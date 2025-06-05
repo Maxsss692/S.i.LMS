@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silay Institute LMS - Student Dashboard</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#0047AB',secondary:'#FFD700'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .course-card {
+            transition: all 0.3s ease;
+            border: 1px solid #E6F3FF;
+        }
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 71, 171, 0.1), 0 8px 10px -6px rgba(0, 71, 171, 0.1);
+            border-color: #FFD700;
+        }
+        .progress-bar {
+            height: 6px;
+            background-color: #E6F3FF;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #FFD700;
+            border-radius: 3px;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #0047AB;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .custom-checkbox.checked::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 6px;
+            width: 5px;
+            height: 10px;
+            border: solid #FFD700;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .custom-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .custom-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .switch-slider {
+            background-color: #0047AB;
+        }
+        input:checked + .switch-slider:before {
+            transform: translateX(20px);
+            background-color: #FFD700;
+        }
+        .logo-text {
+            font-family: 'Pacifico', serif;
+            color: #0047AB;
+        }
+        .logo-text span {
+            color: #FFD700;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+            <div class="flex items-center justify-between px-6 py-3">
+                <div class="flex items-center gap-2">
+                    <button class="md:hidden w-10 h-10 flex items-center justify-center text-primary" id="mobile-menu-button">
+                        <i class="ri-menu-line ri-lg"></i>
+                    </button>
+                    <div class="flex items-center">
+                        <h1 class="text-2xl flex items-center gap-3" style="font-family: 'Times New Roman', Times, serif; color: #0047AB;">
+                            <img src="silay.png" alt="Silay Institute Logo" class="mr-2 h-10">
+                            <span>Silay <span style="color: #FFD700;">Institute</span></span>
+                          </h1>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-primary hover:text-secondary font-medium">Dashboard</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Calendar</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Grades</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Resources</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium">Help</a>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <button class="w-10 h-10 flex items-center justify-center text-primary relative">
+                            <i class="ri-notification-3-line ri-lg"></i>
+                            <span class="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">3</span>
+                        </button>
+                    </div>
+                    
+                    <div class="relative group">
+                        <button class="flex items-center gap-2">
+                            <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
+                                <span class="font-medium">JNF</span>
+                            </div>
+                            <span class="hidden md:block font-medium">John Niel Ferrer</span>
+                            <i class="ri-arrow-down-s-line"></i>
+                        </button>
+                        
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg border border-gray-200 hidden group-hover:block">
+                            <div class="p-3 border-b border-gray-200">
+                                <p class="font-medium">John Niel Ferrer</p>
+                                <p class="text-sm text-gray-500">BSCS-2B</p>
+                                <p class="text-sm text-gray-500">ID: 2023-00754</p>
+                            </div>
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                <i class="ri-user-line mr-2"></i> My Profile
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                <i class="ri-settings-3-line mr-2"></i> Settings
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                <i class="ri-logout-box-line mr-2"></i> Sign Out
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex flex-1">
+            <!-- Sidebar (hidden on mobile) -->
+            <aside class="hidden md:block w-64 bg-primary text-white">
+                <div class="p-4">
+                    <div class="mb-6 mt-2">
+                        <p class="text-xs text-gray-300 uppercase font-medium mb-2">STUDENT</p>
+                        <div class="flex items-center gap-3 p-2 bg-primary-800 bg-opacity-30 rounded">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary">
+                                <span class="font-medium">JNF</span>
+                            </div>
+                            <div>
+                                <p class="font-medium">John Niel Ferrer</p>
+                                <p class="text-xs text-gray-300">BSCS-2B</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <nav>
+                        <p class="text-xs text-gray-300 uppercase font-medium mb-2">Main Menu</p>
+                        <ul class="space-y-1">
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded bg-secondary bg-opacity-20 text-secondary">
+                                    <div class="w-5 h-5 flex items-center justify-center">
+                                        <i class="ri-dashboard-line"></i>
+                                    </div>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white hover:bg-opacity-10">
+                                    <div class="w-5 h-5 flex items-center justify-center">
+                                        <i class="ri-calendar-line"></i>
+                                    </div>
+                                    <span>Calendar</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white hover:bg-opacity-10">
+                                    <div class="w-5 h-5 flex items-center justify-center">
+                                        <i class="ri-file-list-3-line"></i>
+                                    </div>
+                                    <span>Grades</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white hover:bg-opacity-10">
+                                    <div class="w-5 h-5 flex items-center justify-center">
+                                        <i class="ri-message-2-line"></i>
+                                    </div>
+                                    <span>Messages</span>
+                                    <span class="ml-auto bg-secondary text-primary text-xs px-1.5 py-0.5 rounded">5</span>
+                                </a>
+                            </li>
+                        </ul>
+                        
+                        <p class="text-xs text-gray-300 uppercase font-medium mt-6 mb-2">Academic</p>
+                        <ul class="space-y-1">
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white hover:bg-opacity-10">
+                                    <div class="w-5 h-5 flex items-center justify-center">
+                                        <i class="ri-book-open-line"></i>
+                                    </div>
+                                    <span>Courses</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white hover:bg-opacity-10">
+                                    <div class="w-5 h-5 flex items-center justify-center">
+                                        <i class="ri-task-line"></i>
+                                    </div>
+                                    <span>Assignments</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white hover:bg-opacity-10">
+                                    <div class="w-5 h-5 flex items-center justify-center">
+                                        <i class="ri-file-paper-2-line"></i>
+                                    </div>
+                                    <span>Exams</span>
+                                </a>
+                            </li>
+                        </ul>
+                        
+                        <p class="text-xs text-gray-300 uppercase font-medium mt-6 mb-2">Resources</p>
+                        <ul class="space-y-1">
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white hover:bg-opacity-10">
+                                    <div class="w-5 h-5 flex items-center justify-center">
+                                        <i class="ri-book-2-line"></i>
+                                    </div>
+                                    <span>Library</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white hover:bg-opacity-10">
+                                    <div class="w-5 h-5 flex items-center justify-center">
+                                        <i class="ri-question-line"></i>
+                                    </div>
+                                    <span>FAQ</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white hover:bg-opacity-10">
+                                    <div class="w-5 h-5 flex items-center justify-center">
+                                        <i class="ri-file-text-line"></i>
+                                    </div>
+                                    <span>Student Handbook</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
+            <!-- Main Content -->
+            <main class="flex-1 overflow-auto p-6">
+                <div class="max-w-7xl mx-auto">
+                    <!-- Welcome Banner -->
+                    <div class="bg-gradient-to-r from-primary to-blue-700 rounded-lg p-6 mb-8 text-white">
+                        <div class="flex flex-col md:flex-row justify-between items-center">
+                            <div class="mb-4 md:mb-0">
+                                <h1 class="text-2xl font-bold mb-2">Welcome back, John!</h1>
+                                <p class="text-blue-100">Today is June 2, 2025 | Monday</p>
+                                <div class="mt-4">
+                                    <div class="flex items-center gap-2 text-sm">
+                                        <div class="w-6 h-6 flex items-center justify-center bg-secondary rounded-full text-primary">
+                                            <i class="ri-notification-3-line"></i>
+                                        </div>
+                                        <span>You have 3 upcoming deadlines this week</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="bg-white text-primary px-4 py-2 rounded-button font-medium flex items-center gap-2 whitespace-nowrap">
+                                    <i class="ri-calendar-line"></i>
+                                    View Calendar
+                                </button>
+                                <button class="bg-secondary text-primary px-4 py-2 rounded-button font-medium flex items-center gap-2 whitespace-nowrap">
+                                    <i class="ri-task-line"></i>
+                                    Tasks
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search and Filter -->
+                    <div class="flex flex-col md:flex-row gap-4 mb-8">
+                        <div class="relative flex-1">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="ri-search-line text-gray-400"></i>
+                            </div>
+                            <input type="text" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-secondary focus:border-primary" placeholder="Search courses, assignments, or resources...">
+                        </div>
+                        
+                        <div class="flex gap-3">
+                            <div class="relative">
+                                <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded bg-white whitespace-nowrap">
+                                    <i class="ri-filter-3-line text-primary"></i>
+                                    <span>Filter</span>
+                                    <i class="ri-arrow-down-s-line"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="flex items-center gap-2">
+                                <span class="text-gray-600">View:</span>
+                                <button class="w-8 h-8 flex items-center justify-center rounded border border-primary bg-primary text-white">
+                                    <i class="ri-layout-grid-line"></i>
+                                </button>
+                                <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600">
+                                    <i class="ri-list-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- My Courses Section -->
+                    <section class="mb-10">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">My Courses</h2>
+                            <a href="#" class="text-primary hover:text-secondary flex items-center gap-1">
+                                <span>View All</span>
+                                <i class="ri-arrow-right-line"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Course Card 1 -->
+                            <div class="course-card bg-white rounded-lg overflow-hidden shadow-sm">
+                                <div class="h-3 bg-primary"></div>
+                                <div class="p-5">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div>
+                                            <h3 class="font-bold text-primary">BSCS 2BC</h3>
+                                            <h4 class="text-lg font-semibold text-gray-800">Fundamentals of Enterprise Data Management</h4>
+                                        </div>
+                                        <div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary">
+                                            <i class="ri-database-2-line ri-lg"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-600 mb-4">Ms. Rufin</p>
+                                    <div class="mb-4">
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-600">Progress</span>
+                                            <span class="font-medium">68%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 68%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <div class="text-sm text-gray-500">
+                                            <i class="ri-time-line mr-1"></i> Next class: Today, 1:30 PM
+                                        </div>
+                                        <button class="w-8 h-8 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary hover:text-white">
+                                            <i class="ri-arrow-right-line"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Course Card 2 -->
+                            <div class="course-card bg-white rounded-lg overflow-hidden shadow-sm">
+                                <div class="h-3 bg-primary"></div>
+                                <div class="p-5">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div>
+                                            <h3 class="font-bold text-primary">BSCS 2 ABC</h3>
+                                            <h4 class="text-lg font-semibold text-gray-800">Mobile Application Development 2</h4>
+                                        </div>
+                                        <div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary">
+                                            <i class="ri-smartphone-line ri-lg"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-600 mb-4">Mr. Araneta</p>
+                                    <div class="mb-4">
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-600">Progress</span>
+                                            <span class="font-medium">75%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 75%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <div class="text-sm text-gray-500">
+                                            <i class="ri-time-line mr-1"></i> Next class: Tomorrow, 9:00 AM
+                                        </div>
+                                        <button class="w-8 h-8 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary hover:text-white">
+                                            <i class="ri-arrow-right-line"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Course Card 3 -->
+                            <div class="course-card bg-white rounded-lg overflow-hidden shadow-sm">
+                                <div class="h-3 bg-primary"></div>
+                                <div class="p-5">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div>
+                                            <h3 class="font-bold text-primary">BSCS 2B</h3>
+                                            <h4 class="text-lg font-semibold text-gray-800">Indigenous Creative Crafts</h4>
+                                        </div>
+                                        <div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary">
+                                            <i class="ri-brush-line ri-lg"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-600 mb-4">Ms. Nivera</p>
+                                    <div class="mb-4">
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-600">Progress</span>
+                                            <span class="font-medium">42%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 42%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <div class="text-sm text-gray-500">
+                                            <i class="ri-time-line mr-1"></i> Next class: Wednesday, 2:00 PM
+                                        </div>
+                                        <button class="w-8 h-8 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary hover:text-white">
+                                            <i class="ri-arrow-right-line"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Course Card 4 -->
+                            <div class="course-card bg-white rounded-lg overflow-hidden shadow-sm">
+                                <div class="h-3 bg-primary"></div>
+                                <div class="p-5">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div>
+                                            <h3 class="font-bold text-primary">BSCS 2ABC</h3>
+                                            <h4 class="text-lg font-semibold text-gray-800">Application Development and Emerging Technologies</h4>
+                                        </div>
+                                        <div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary">
+                                            <i class="ri-code-s-slash-line ri-lg"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-600 mb-4">Mr. Genovia</p>
+                                    <div class="mb-4">
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-600">Progress</span>
+                                            <span class="font-medium">89%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 89%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <div class="text-sm text-gray-500">
+                                            <i class="ri-time-line mr-1"></i> Next class: Thursday, 10:30 AM
+                                        </div>
+                                        <button class="w-8 h-8 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary hover:text-white">
+                                            <i class="ri-arrow-right-line"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Course Card 5 -->
+                            <div class="course-card bg-white rounded-lg overflow-hidden shadow-sm">
+                                <div class="h-3 bg-primary"></div>
+                                <div class="p-5">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div>
+                                            <h3 class="font-bold text-primary">BSCS 2 ABC</h3>
+                                            <h4 class="text-lg font-semibold text-gray-800">PATHFIT 4: Dance-based Activities</h4>
+                                        </div>
+                                        <div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary">
+                                            <i class="ri-music-2-line ri-lg"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-600 mb-4">Mr. Misajon</p>
+                                    <div class="mb-4">
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-600">Progress</span>
+                                            <span class="font-medium">55%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 55%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <div class="text-sm text-gray-500">
+                                            <i class="ri-time-line mr-1"></i> Next class: Friday, 3:00 PM
+                                        </div>
+                                        <button class="w-8 h-8 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary hover:text-white">
+                                            <i class="ri-arrow-right-line"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Course Card 6 -->
+                            <div class="course-card bg-white rounded-lg overflow-hidden shadow-sm">
+                                <div class="h-3 bg-primary"></div>
+                                <div class="p-5">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div>
+                                            <h3 class="font-bold text-primary">BSCS 2 AB</h3>
+                                            <h4 class="text-lg font-semibold text-gray-800">Linear Algebra for Computing Sciences</h4>
+                                        </div>
+                                        <div class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary">
+                                            <i class="ri-function-line ri-lg"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-600 mb-4">Mr. Sadava</p>
+                                    <div class="mb-4">
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-600">Progress</span>
+                                            <span class="font-medium">62%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 62%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <div class="text-sm text-gray-500">
+                                            <i class="ri-time-line mr-1"></i> Next class: Wednesday, 8:00 AM
+                                        </div>
+                                        <button class="w-8 h-8 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary hover:text-white">
+                                            <i class="ri-arrow-right-line"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Upcoming Deadlines and Activities -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-lg shadow-sm p-6">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-bold text-gray-800">Upcoming Deadlines</h2>
+                                    <div class="flex gap-2">
+                                        <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600">
+                                            <i class="ri-arrow-left-s-line"></i>
+                                        </button>
+                                        <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600">
+                                            <i class="ri-arrow-right-s-line"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <!-- Deadline Item 1 -->
+                                    <div class="flex gap-4 p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                                        <div class="w-12 h-12 flex-shrink-0 flex flex-col items-center justify-center bg-primary text-white rounded">
+                                            <span class="text-xs">JUN</span>
+                                            <span class="font-bold">05</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h4 class="font-semibold text-gray-800">Final Project Submission</h4>
+                                                    <p class="text-sm text-gray-600">BSCS 2ABC - Application Development</p>
+                                                </div>
+                                                <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded">Due in 3 days</span>
+                                            </div>
+                                            <div class="mt-2 flex items-center text-sm text-gray-500">
+                                                <i class="ri-time-line mr-1"></i> 11:59 PM
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Deadline Item 2 -->
+                                    <div class="flex gap-4 p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                                        <div class="w-12 h-12 flex-shrink-0 flex flex-col items-center justify-center bg-primary text-white rounded">
+                                            <span class="text-xs">JUN</span>
+                                            <span class="font-bold">04</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h4 class="font-semibold text-gray-800">Database Design Assignment</h4>
+                                                    <p class="text-sm text-gray-600">BSCS 2BC - Enterprise Data Management</p>
+                                                </div>
+                                                <span class="px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded">Due in 2 days</span>
+                                            </div>
+                                            <div class="mt-2 flex items-center text-sm text-gray-500">
+                                                <i class="ri-time-line mr-1"></i> 5:00 PM
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Deadline Item 3 -->
+                                    <div class="flex gap-4 p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                                        <div class="w-12 h-12 flex-shrink-0 flex flex-col items-center justify-center bg-primary text-white rounded">
+                                            <span class="text-xs">JUN</span>
+                                            <span class="font-bold">03</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h4 class="font-semibold text-gray-800">Quiz on Matrices</h4>
+                                                    <p class="text-sm text-gray-600">BSCS 2 AB - Linear Algebra</p>
+                                                </div>
+                                                <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded">Due tomorrow</span>
+                                            </div>
+                                            <div class="mt-2 flex items-center text-sm text-gray-500">
+                                                <i class="ri-time-line mr-1"></i> 10:30 AM
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Deadline Item 4 -->
+                                    <div class="flex gap-4 p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                                        <div class="w-12 h-12 flex-shrink-0 flex flex-col items-center justify-center bg-secondary text-primary rounded">
+                                            <span class="text-xs">JUN</span>
+                                            <span class="font-bold">02</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h4 class="font-semibold text-gray-800">Choreography Practice Video</h4>
+                                                    <p class="text-sm text-gray-600">BSCS 2 ABC - PATHFIT 4</p>
+                                                </div>
+                                                <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded">Due today</span>
+                                            </div>
+                                            <div class="mt-2 flex items-center text-sm text-gray-500">
+                                                <i class="ri-time-line mr-1"></i> 3:00 PM
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6 text-center">
+                                    <button class="text-primary hover:text-secondary font-medium">View All Deadlines</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-white rounded-lg shadow-sm p-6">
+                                <h2 class="text-xl font-bold text-gray-800 mb-6">Today's Schedule</h2>
+                                
+                                <div class="space-y-4">
+                                    <div class="flex items-center gap-3 p-3 bg-primary bg-opacity-5 rounded-lg">
+                                        <div class="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full">
+                                            <i class="ri-database-2-line"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="font-medium text-gray-800">Enterprise Data Management</h4>
+                                            <p class="text-sm text-gray-600">1:30 PM - 3:00 PM</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center gap-3 p-3 border border-gray-100 rounded-lg">
+                                        <div class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-600 rounded-full">
+                                            <i class="ri-code-s-slash-line"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="font-medium text-gray-800">Software Engineering 1</h4>
+                                            <p class="text-sm text-gray-600">3:30 PM - 5:00 PM</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center gap-3 p-3 border border-gray-100 rounded-lg">
+                                        <div class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-600 rounded-full">
+                                            <i class="ri-group-line"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="font-medium text-gray-800">Group Study Session</h4>
+                                            <p class="text-sm text-gray-600">5:30 PM - 7:00 PM</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6">
+                                    <button class="w-full bg-primary text-white py-2 rounded-button font-medium flex items-center justify-center gap-2 whitespace-nowrap">
+                                        <i class="ri-calendar-line"></i>
+                                        View Full Calendar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg shadow-sm p-6 mt-6">
+                                <h2 class="text-xl font-bold text-gray-800 mb-6">Resources</h2>
+                                
+                                <div class="space-y-3">
+                                    <a href="#" class="flex items-center gap-3 p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                                        <div class="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full">
+                                            <i class="ri-book-2-line"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="font-medium text-gray-800">Library Reading Materials</h4>
+                                            <p class="text-sm text-gray-600">Access digital resources</p>
+                                        </div>
+                                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                                    </a>
+                                    
+                                    <a href="#" class="flex items-center gap-3 p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                                        <div class="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full">
+                                            <i class="ri-question-line"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="font-medium text-gray-800">LMS FAQ</h4>
+                                            <p class="text-sm text-gray-600">By: Mark Joemine L. Renegado</p>
+                                        </div>
+                                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                                    </a>
+                                    
+                                    <a href="#" class="flex items-center gap-3 p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                                        <div class="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full">
+                                            <i class="ri-file-text-line"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="font-medium text-gray-800">Student Handbook</h4>
+                                            <p class="text-sm text-gray-600">Silay Institute guidelines</p>
+                                        </div>
+                                        <i class="ri-arrow-right-s-line text-gray-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities -->
+                    <section class="mb-10">
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-bold text-gray-800">Recent Activities</h2>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm text-gray-600">Show:</span>
+                                    <div class="relative">
+                                        <button class="flex items-center gap-2 px-3 py-1 border border-gray-300 rounded bg-white text-sm">
+                                            <span>All Activities</span>
+                                            <i class="ri-arrow-down-s-line"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div class="flex gap-4">
+                                    <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-green-100 text-green-600 rounded-full">
+                                        <i class="ri-check-line"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h4 class="font-medium text-gray-800">Assignment Submitted: "Mobile App UI Design"</h4>
+                                            <span class="text-sm text-gray-500">Today, 10:24 AM</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600">BSCS 2 ABC - Mobile Application Development 2</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex gap-4">
+                                    <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-blue-100 text-blue-600 rounded-full">
+                                        <i class="ri-file-text-line"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h4 class="font-medium text-gray-800">New Material Added: "Database Normalization"</h4>
+                                            <span class="text-sm text-gray-500">Yesterday, 3:15 PM</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600">BSCS 2BC - Fundamentals of Enterprise Data Management</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex gap-4">
+                                    <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-purple-100 text-purple-600 rounded-full">
+                                        <i class="ri-message-2-line"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h4 class="font-medium text-gray-800">New Announcement: "Midterm Exam Schedule"</h4>
+                                            <span class="text-sm text-gray-500">Yesterday, 11:30 AM</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600">BSCS 2 AB - Linear Algebra for Computing Sciences</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex gap-4">
+                                    <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-orange-100 text-orange-600 rounded-full">
+                                        <i class="ri-calendar-check-line"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h4 class="font-medium text-gray-800">Assignment Due Date Changed: "Final Project"</h4>
+                                            <span class="text-sm text-gray-500">Jun 1, 4:45 PM</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600">BSCS 2ABC - Application Development and Emerging Technologies</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex gap-4">
+                                    <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-red-100 text-red-600 rounded-full">
+                                        <i class="ri-time-line"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <h4 class="font-medium text-gray-800">Assignment Due Soon: "Choreography Practice Video"</h4>
+                                            <span class="text-sm text-gray-500">Jun 1, 9:00 AM</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600">BSCS 2 ABC - PATHFIT 4: Dance-based Activities</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 text-center">
+                                <button class="text-primary hover:text-secondary font-medium">View All Activities</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-primary text-white py-6">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                 <h1 class="logo-text text-xl flex items-center text-white font-serif">
+                            <img src="silay.png" alt="Silay Institute Logo" class="mr-2 h-8"> <!-- Adjust size with h-8 -->
+                            Silay <span>Institute</span>
+                </h1>
+                           
+ 
+                        <p class="text-sm text-blue-200">Learning Management System © 2025</p>
+                    </div>
+                    
+                    <div class="flex flex-wrap justify-center gap-6">
+                        <a href="#" class="text-blue-200 hover:text-secondary">Privacy Policy</a>
+                        <a href="#" class="text-blue-200 hover:text-secondary">Terms of Service</a>
+                        <a href="#" class="text-blue-200 hover:text-secondary">Help Center</a>
+                        <a href="#" class="text-blue-200 hover:text-secondary">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Mobile Menu (hidden by default) -->
+    <div id="mobile-menu" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="bg-white w-64 h-full overflow-y-auto">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h1 class="logo-text text-xl">Silay <span>Institute</span></h1>
+                <button id="close-mobile-menu" class="w-8 h-8 flex items-center justify-center text-gray-500">
+                    <i class="ri-close-line ri-lg"></i>
+                </button>
+            </div>
+            
+            <div class="p-4">
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 p-2 bg-gray-100 rounded">
+                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
+                            <span class="font-medium">JNF</span>
+                        </div>
+                        <div>
+                            <p class="font-medium">John Niel Ferrer</p>
+                            <p class="text-xs text-gray-500">BSCS-2B</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <nav>
+                    <p class="text-xs text-gray-500 uppercase font-medium mb-2">Main Menu</p>
+                    <ul class="space-y-1 mb-6">
+                        <li>
+                            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded bg-primary text-white">
+                                <i class="ri-dashboard-line"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded text-gray-700 hover:bg-gray-100">
+                                <i class="ri-calendar-line"></i>
+                                <span>Calendar</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded text-gray-700 hover:bg-gray-100">
+                                <i class="ri-file-list-3-line"></i>
+                                <span>Grades</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded text-gray-700 hover:bg-gray-100">
+                                <i class="ri-message-2-line"></i>
+                                <span>Messages</span>
+                                <span class="ml-auto bg-primary text-white text-xs px-1.5 py-0.5 rounded">5</span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <p class="text-xs text-gray-500 uppercase font-medium mb-2">Academic</p>
+                    <ul class="space-y-1 mb-6">
+                        <li>
+                            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded text-gray-700 hover:bg-gray-100">
+                                <i class="ri-book-open-line"></i>
+                                <span>Courses</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded text-gray-700 hover:bg-gray-100">
+                                <i class="ri-task-line"></i>
+                                <span>Assignments</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded text-gray-700 hover:bg-gray-100">
+                                <i class="ri-file-paper-2-line"></i>
+                                <span>Exams</span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <p class="text-xs text-gray-500 uppercase font-medium mb-2">Resources</p>
+                    <ul class="space-y-1">
+                        <li>
+                            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded text-gray-700 hover:bg-gray-100">
+                                <i class="ri-book-2-line"></i>
+                                <span>Library</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded text-gray-700 hover:bg-gray-100">
+                                <i class="ri-question-line"></i>
+                                <span>FAQ</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded text-gray-700 hover:bg-gray-100">
+                                <i class="ri-file-text-line"></i>
+                                <span>Student Handbook</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script id="mobile-menu-script">
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            closeMobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            });
+        });
+    </script>
+
+    <script id="checkbox-script">
+        document.addEventListener('DOMContentLoaded', function() {
+            const customCheckboxes = document.querySelectorAll('.custom-checkbox');
+            
+            customCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', function() {
+                    this.classList.toggle('checked');
+                    const input = this.querySelector('input');
+                    if (input) {
+                        input.checked = !input.checked;
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script id="switch-script">
+        document.addEventListener('DOMContentLoaded', function() {
+            const switchInputs = document.querySelectorAll('.custom-switch input');
+            
+            switchInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    // Any additional logic for switch changes can go here
+                });
+            });
+        });
+    </script>
+</body>
+</html>
